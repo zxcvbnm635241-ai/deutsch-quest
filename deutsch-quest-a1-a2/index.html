@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DeutschQuest 🥨 德語從 0 到 A2 遊戲化學習基地</title>
+  <meta name="description" content="專為初學者打造的 A1-A2 德語學習網站！整合 DW Nicos Weg、Easy German 等各大德語網站導航，內建 0 到 A2 闖關地圖、四大互動小遊戲、三性單字閃卡、發音點讀與 CEFR 級別診斷測驗。" />
+  
+  <!-- Open Graph 社群分享預覽卡片 (LINE / FB / Discord / Threads 點擊連結時顯示) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="DeutschQuest 🥨 德語從 0 到 A2 遊戲化學習基地" />
+  <meta property="og:description" content="點進來一起學德語！整合各大權威德語網站、影音文化專欄、Der/Die/Das 與 V2 造句互動小遊戲，還能測驗你的德語 CEFR 等級！" />
+  <meta name="theme-color" content="#58CC02" />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 頂部德國三色裝飾條 -->
+  <div class="german-flag-bar">
+    <span class="flag-black"></span>
+    <span class="flag-red"></span>
+    <span class="flag-gold"></span>
+  </div>
+
+  <div class="app-layout">
+    <!-- 左側遊戲化導覽列 -->
+    <aside class="sidebar">
+      <div class="brand-box">
+        <div class="brand-logo" id="avatarDisplay" title="點擊切換吉祥物頭像">🥨</div>
+        <div class="brand-text">
+          <h1>DeutschQuest</h1>
+          <span class="brand-sub">0 ➔ A2 循序漸進基地</span>
+        </div>
+      </div>
+
+      <!-- 個人等級小卡片（點擊名字可自訂暱稱） -->
+      <div class="player-mini-card">
+        <div class="player-level-row">
+          <span class="level-pill" id="sidebarLevelBadge">A1.1</span>
+          <span class="player-name" id="sidebarUsername" title="點擊修改你的學習暱稱" style="cursor:pointer;">德語探險家 ✏️</span>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar-fill" id="sidebarXpFill" style="width: 35%;"></div>
+        </div>
+        <div class="xp-meta-row">
+          <span>✨ 總經驗 <strong id="sidebarTotalXp">120</strong> XP</span>
+          <span>目標: <strong>CEFR A2</strong></span>
+        </div>
+      </div>
+
+      <!-- 主選單 -->
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-tab="roadmap">
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-label">0 ➔ A2 闖關地圖</span>
+        </button>
+        <button class="nav-btn" data-tab="hub">
+          <span class="nav-icon">🧭</span>
+          <span class="nav-label">各大德語網站導航</span>
+        </button>
+        <button class="nav-btn" data-tab="culture">
+          <span class="nav-icon">🎬</span>
+          <span class="nav-label">影音・文化・最新資訊</span>
+        </button>
+        <button class="nav-btn" data-tab="games">
+          <span class="nav-icon">🎮</span>
+          <span class="nav-label">四大互動小遊戲</span>
+        </button>
+        <button class="nav-btn" data-tab="vocab">
+          <span class="nav-icon">🃏</span>
+          <span class="nav-label">三性單字閃卡庫</span>
+        </button>
+        <button class="nav-btn" data-tab="quiz">
+          <span class="nav-icon">🎓</span>
+          <span class="nav-label">級別診斷測驗系統</span>
+        </button>
+        <button class="nav-btn" data-tab="tracker">
+          <span class="nav-icon">📓</span>
+          <span class="nav-label">學習紀錄與備份</span>
+        </button>
+      </nav>
+
+      <!-- 每日一句德語打氣框 -->
+      <div class="daily-quote-box">
+        <div class="quote-tag">💡 每日德語口訣</div>
+        <p class="quote-de" id="dailyQuoteDe">„Übung macht den Meister!“</p>
+        <p class="quote-zh" id="dailyQuoteZh">熟能生巧！（點下方喇叭聽發音）</p>
+        <button class="btn-mini-tts" id="btnSpeakQuote">🔊 聽德語發音</button>
+      </div>
+    </aside>
+
+    <!-- 右側主內容區 -->
+    <main class="main-area">
+      <!-- 頂部遊戲化狀態列 -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="sync-indicator" id="syncStatusBadge" title="每位訪客的進度獨立儲存在自己的裝置中，亦可匯出 JSON 檔案">
+            <span class="sync-dot online"></span>
+            <span id="syncStatusText">個人學習進度自動保存中</span>
+          </div>
+          <div class="daily-goal-chip">
+            <span>🎯 今日目標：</span>
+            <strong id="todayXpText">40 / 100 XP</strong>
+          </div>
+        </div>
+
+        <div class="topbar-stats">
+          <div class="stat-pill streak-pill" title="連續學習天數">
+            <span>🔥</span>
+            <strong id="statStreak">1</strong>
+            <span>天</span>
+          </div>
+          <div class="stat-pill vocab-pill" title="已熟記單字數">
+            <span>🥨</span>
+            <strong id="statVocabCount">4</strong>
+            <span>/ 36 詞</span>
+          </div>
+          <div class="stat-pill xp-pill" title="總累積經驗值">
+            <span>⭐</span>
+            <strong id="statXp">120</strong>
+            <span>XP</span>
+          </div>
+          <button class="btn-quick-backup" id="btnShareSite" style="background:#1CB0F6; border-bottom-color:#1899D6;" title="複製網站連結分享給朋友">
+            🔗 分享網站連結
+          </button>
+          <button class="btn-quick-backup" id="btnTopBackup" title="下載或備份我的學習紀錄 JSON">
+            💾 備份紀錄
+          </button>
+        </div>
+      </header>
+
+      <!-- ==================== TAB 1: 0 -> A2 循序漸進闖關地圖 ==================== -->
+      <section class="tab-panel active" id="tab-roadmap">
+        <div class="hero-banner">
+          <div class="hero-content">
+            <span class="hero-kicker">🚀 從 0 開始、循序漸進邁向 CEFR A2</span>
+            <h2>你的專屬德語闖關樹 (Lernpfad 0 ➔ A2)</h2>
+            <p>
+              我們將零基礎到 A2 拆解成 <strong>5 個清晰階段、15 個黃金關卡</strong>。點擊任一關卡即可閱讀「濃縮文法秘訣」、點擊喇叭聽真人合成德語例句，並直接跳轉對應的各大權威網站練習！每位訪客點進來都擁有自己獨立的闖關紀錄！
+            </p>
+            <div class="hero-progress-wrap">
+              <div class="hero-progress-labels">
+                <span>整體 0 ➔ A2 闖關完成度</span>
+                <strong id="roadmapPercentText">13% (2 / 15 關卡)</strong>
+              </div>
+              <div class="hero-progress-bar">
+                <div class="hero-progress-fill" id="roadmapProgressFill" style="width: 13%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-mascot-box">
+            <div class="mascot-bubble">Hallo! 點擊下方關卡開始學習吧！</div>
+            <div class="mascot-giant">🦉🇩🇪</div>
+          </div>
+        </div>
+
+        <!-- 技能樹時間軸容器 -->
+        <div id="roadmapContainer" class="roadmap-timeline"></div>
+      </section>
+
+      <!-- ==================== TAB 2: 各大德語學習網站整合導航 ==================== -->
+      <section class="tab-panel" id="tab-hub">
+        <div class="section-header-card">
+          <div>
+            <span class="section-tag">🧭 一站式資源入口</span>
+            <h2>各大權威德語學習網站整合中心 (A1 - A2 精選)</h2>
+            <p>幫你把德國之聲 (DW)、歌德學院、vhs 官方教材、動詞變位大神典與慢速新聞全部整理好！點擊星星 ⭐ 可將最愛網站釘選在最上方，點擊「前往學習 (+10 XP)」可直接開啟網站並自動記錄學習經驗！</p>
+          </div>
+        </div>
+
+        <!-- 篩選按鈕列 -->
+        <div class="filter-bar" id="resourceFilterBar">
+          <button class="filter-chip active" data-filter="all">🌟 全部資源 (12)</button>
+          <button class="filter-chip" data-filter="favorite">⭐ 我的最愛釘選</button>
+          <button class="filter-chip" data-filter="comprehensive">🎬 綜合主線課程 (DW/vhs)</button>
+          <button class="filter-chip" data-filter="media">🎧 影音與 Podcast</button>
+          <button class="filter-chip" data-filter="news">📰 文化與簡易新聞</button>
+          <button class="filter-chip" data-filter="dictionary">📖 字典與變位工具</button>
+          <button class="filter-chip" data-filter="exam">🏆 歌德 A1/A2 檢定題庫</button>
+        </div>
+
+        <div class="resource-grid" id="resourceGrid"></div>
+      </section>
+
+      <!-- ==================== TAB 3: 影音・文化・最新資訊 ==================== -->
+      <section class="tab-panel" id="tab-culture">
+        <div class="section-header-card">
+          <div>
+            <span class="section-tag">🎬 沉浸式德國文化與視聽室</span>
+            <h2>影音・文化專欄・最新德國生活資訊</h2>
+            <p>學語言不只是背文法！透過德國押瓶費 (Pfand)、週日安寧日、德國麵包店點餐與德鐵 (DB) 月票指南，一邊讀雙語情境對話、一邊聽發音，還能一鍵開啟最新簡易德語新聞！</p>
+          </div>
+        </div>
+
+        <!-- 快速開啟最新德國新聞與視聽頻道傳送門 -->
+        <div class="live-portals-banner">
+          <div class="live-portal-card">
+            <span class="portal-icon">📻</span>
+            <div>
+              <h4>Nachrichtenleicht 每週簡易新聞</h4>
+              <p>德國國家廣播電台專為 A1-A2 撰寫的當週最新德國新聞（附慢速朗讀 MP3）</p>
+            </div>
+            <a href="https://www.nachrichtenleicht.de/" target="_blank" rel="noopener" class="btn-game btn-blue" onclick="window.addStudyXp(15, '閱讀德國簡易新聞')">立即看最新新聞 ↗</a>
+          </div>
+          <div class="live-portal-card">
+            <span class="portal-icon">📺</span>
+            <div>
+              <h4>Super Easy German 雙語街訪</h4>
+              <p>慢速清晰的柏林街頭實境影片，內建德英雙字幕，訓練 A1-A2 最真實聽力</p>
+            </div>
+            <a href="https://www.youtube.com/playlist?list=PLk1fjOl39-50kWobutO8NVFzbw9PHtbbg" target="_blank" rel="noopener" class="btn-game btn-green" onclick="window.addStudyXp(15, '觀看 Super Easy German 影片')">開啟播放清單 ↗</a>
+          </div>
+        </div>
+
+        <!-- 文化卡片列表 -->
+        <div class="culture-grid" id="cultureGrid"></div>
+      </section>
+
+      <!-- ==================== TAB 4: 四大互動小遊戲 ==================== -->
+      <section class="tab-panel" id="tab-games">
+        <div class="section-header-card">
+          <div>
+            <span class="section-tag">🎮 邊玩邊記・告別死背</span>
+            <h2>德語四大互動遊樂場 (Spielplatz A1-A2)</h2>
+            <p>專門針對德語初學者最頭痛的「名詞三性 (der/die/das)」、「單字記憶」、「V2 與子句語序」以及「聽音辨字」設計的四款闖關遊戲！每次破關都會自動存入你的學習檔案！</p>
+          </div>
+        </div>
+
+        <!-- 遊戲切換器 -->
+        <div class="game-selector-tabs">
+          <button class="game-tab-btn active" data-game="derdiedas">
+            <span class="g-icon">👑</span>
+            <div>
+              <strong>1. 冠詞快問快答</strong>
+              <small>Der / Die / Das 三性挑戰</small>
+            </div>
+          </button>
+          <button class="game-tab-btn" data-game="matching">
+            <span class="g-icon">🃏</span>
+            <div>
+              <strong>2. 單字記憶配對</strong>
+              <small>德語名詞 ✕ 中文閃電翻牌</small>
+            </div>
+          </button>
+          <button class="game-tab-btn" data-game="satzbau">
+            <span class="g-icon">🧱</span>
+            <div>
+              <strong>3. 句子重組挑戰</strong>
+              <small>V2 動詞第二位 & weil 子句</small>
+            </div>
+          </button>
+          <button class="game-tab-btn" data-game="listening">
+            <span class="g-icon">🎧</span>
+            <div>
+              <strong>4. 聽力發音選字</strong>
+              <small>TTS 語音合成聽音辨義</small>
+            </div>
+          </button>
+        </div>
+
+        <!-- 遊戲 1: Der / Die / Das 冠詞快問快答 -->
+        <div class="game-arena active" id="arena-derdiedas">
+          <div class="arena-top-bar">
+            <div class="arena-stat">🏆 最高紀錄：<strong id="dddHighScore">80</strong> 分</div>
+            <div class="arena-stat">🔥 目前連勝：<strong id="dddStreak">0</strong></div>
+            <div class="arena-stat">⭐ 本局得分：<strong id="dddScore">0</strong></div>
+            <div class="arena-stat">📊 題數：<strong id="dddProgress">1 / 10</strong></div>
+          </div>
+
+          <div class="ddd-stage-card" id="dddCard">
+            <span class="ddd-cat-badge" id="dddCategory">A1 · 飲食</span>
+            <h3 class="ddd-noun" id="dddNoun">___ Apfel</h3>
+            <p class="ddd-zh" id="dddZh">（蘋果）</p>
+            <button class="btn-mini-tts" id="dddSpeakBtn">🔊 聽單字發音</button>
+
+            <div class="ddd-buttons-row">
+              <button class="btn-gender btn-der" data-choice="der">
+                <span class="g-art">der</span>
+                <span class="g-sub">陽性 (Maskulin)</span>
+              </button>
+              <button class="btn-gender btn-die" data-choice="die">
+                <span class="g-art">die</span>
+                <span class="g-sub">陰性 (Feminin)</span>
+              </button>
+              <button class="btn-gender btn-das" data-choice="das">
+                <span class="g-art">das</span>
+                <span class="g-sub">中性 (Neutral)</span>
+              </button>
+            </div>
+
+            <div class="game-feedback-box hidden" id="dddFeedback"></div>
+            <button class="btn-game btn-green hidden" id="dddNextBtn">下一題 ➔</button>
+          </div>
+        </div>
+
+        <!-- 遊戲 2: 單字記憶翻牌配對 -->
+        <div class="game-arena" id="arena-matching">
+          <div class="arena-top-bar">
+            <div class="arena-stat">⚡ 最佳紀錄：<strong id="matchBestTime">35</strong> 秒</div>
+            <div class="arena-stat">⏱️ 已用時間：<strong id="matchTimer">0</strong> 秒</div>
+            <div class="arena-stat">🎯 已配對：<strong id="matchPairs">0 / 6</strong> 組</div>
+            <button class="btn-game btn-orange" id="btnRestartMatch">🔄 重新洗牌開局</button>
+          </div>
+          <p class="arena-hint">💡 點擊一張「帶顏色冠詞的德語卡」與對應的「中文意思卡」進行配對！配對成功會自動唸出德語發音喔！</p>
+          <div class="matching-board" id="matchingBoard"></div>
+        </div>
+
+        <!-- 遊戲 3: Satzbau 句子重組挑戰 -->
+        <div class="game-arena" id="arena-satzbau">
+          <div class="arena-top-bar">
+            <div class="arena-stat">🏆 最高分：<strong id="sbHighScore">60</strong> 分</div>
+            <div class="arena-stat">⭐ 本局得分：<strong id="sbScore">0</strong></div>
+            <div class="arena-stat">📊 關卡：<strong id="sbProgress">1 / 8</strong></div>
+          </div>
+
+          <div class="satzbau-card">
+            <div class="sb-header">
+              <span class="sb-rule-badge" id="sbRuleBadge">V2 動詞第二位</span>
+              <button class="btn-mini-tts" id="sbSpeakBtn">🔊 聽正確整句發音</button>
+            </div>
+            <h3 class="sb-prompt-zh" id="sbPromptZh">今天早上我喝一杯咖啡。</h3>
+
+            <div class="sb-dropzone-label">👇 點擊下方語塊，依正確德語語序排列於此（點擊已排語塊可退回）：</div>
+            <div class="sb-answer-zone" id="sbAnswerZone"></div>
+
+            <div class="sb-word-bank" id="sbWordBank"></div>
+
+            <div class="sb-actions">
+              <button class="btn-game btn-gray" id="sbClearBtn">↺ 重排本題</button>
+              <button class="btn-game btn-green" id="sbCheckBtn">✅ 檢查語序</button>
+              <button class="btn-game btn-blue hidden" id="sbNextBtn">下一題 ➔</button>
+            </div>
+
+            <div class="game-feedback-box hidden" id="sbFeedback"></div>
+          </div>
+        </div>
+
+        <!-- 遊戲 4: 聽力發音選字 (Hörverständnis) -->
+        <div class="game-arena" id="arena-listening">
+          <div class="arena-top-bar">
+            <div class="arena-stat">🏆 最高分：<strong id="listenHighScore">70</strong> 分</div>
+            <div class="arena-stat">⭐ 本局得分：<strong id="listenScore">0</strong></div>
+            <div class="arena-stat">📊 題數：<strong id="listenProgress">1 / 8</strong></div>
+          </div>
+
+          <div class="listening-card">
+            <p class="listen-instruction">請點擊下方大喇叭聆聽德語發音，選出正確的單字與中文意思：</p>
+            <div class="listen-speaker-group">
+              <button class="btn-giant-speaker" id="btnListenPlayNormal">
+                🔊 正常語速播放
+              </button>
+              <button class="btn-slow-speaker" id="btnListenPlaySlow">
+                🐢 慢速清晰播放 (0.65x)
+              </button>
+            </div>
+            <p class="listen-example-hint" id="listenExampleHint">提示：可先聽發音，作答後會顯示完整例句</p>
+
+            <div class="listen-options-grid" id="listenOptionsGrid"></div>
+
+            <div class="game-feedback-box hidden" id="listenFeedback"></div>
+            <button class="btn-game btn-green hidden" id="listenNextBtn">下一題 ➔</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 5: 三性單字閃卡庫 ==================== -->
+      <section class="tab-panel" id="tab-vocab">
+        <div class="section-header-card">
+          <div>
+            <span class="section-tag">🃏 視覺色彩記憶法</span>
+            <h2>A1 - A2 必背三性單字閃卡庫 (Wortschatz-Karten)</h2>
+            <p>
+              用顏色幫大腦建立直覺：<span class="pill-der">🔵 陽性 der (藍色)</span>、
+              <span class="pill-die">🔴 陰性 die (紅色)</span>、
+              <span class="pill-das">🟢 中性 das (綠色)</span>！點擊卡片可聽發音、看記憶口訣，並切換「✅ 已熟記」狀態。
+            </p>
+          </div>
+        </div>
+
+        <div class="filter-bar" id="vocabFilterBar">
+          <button class="filter-chip active" data-vfilter="all">全部單字 (36)</button>
+          <button class="filter-chip" data-vfilter="der">🔵 陽性 der</button>
+          <button class="filter-chip" data-vfilter="die">🔴 陰性 die</button>
+          <button class="filter-chip" data-vfilter="das">🟢 中性 das</button>
+          <button class="filter-chip" data-vfilter="A1">🌱 A1 初階</button>
+          <button class="filter-chip" data-vfilter="A2">🚀 A2 進階</button>
+          <button class="filter-chip" data-vfilter="unmastered">⏳ 待熟記單字</button>
+        </div>
+
+        <div class="vocab-grid" id="vocabGrid"></div>
+      </section>
+
+      <!-- ==================== TAB 6: 級別診斷測驗系統 ==================== -->
+      <section class="tab-panel" id="tab-quiz">
+        <div class="section-header-card">
+          <div>
+            <span class="section-tag">🎓 CEFR 0 ➔ A2 能力檢測</span>
+            <h2>德語級別診斷測驗系統 (Einstufungstest)</h2>
+            <p>不知道自己目前在 A1.1、A1.2、A2.1 還是已經具備 A2.2 實力？透過這份精心設計的 12 題階梯式診斷測驗（涵蓋發音、三性、V2 語序、Akkusativ/Dativ、完成式與從屬子句），立即獲得弱點分析與專屬學習處方！</p>
+          </div>
+        </div>
+
+        <!-- 測驗進行區 -->
+        <div class="quiz-container" id="quizActiveBox">
+          <div class="quiz-progress-header">
+            <span id="quizStepBadge" class="level-pill">第 1 / 12 題 · A1.1 檢測</span>
+            <div class="quiz-bar-outer">
+              <div class="quiz-bar-inner" id="quizBarInner" style="width: 8%;"></div>
+            </div>
+            <span id="quizSkillLabel" class="quiz-skill-tag">發音與基礎問候</span>
+          </div>
+
+          <h3 class="quiz-question-text" id="quizQuestionText">題目載入中...</h3>
+
+          <div class="quiz-options-list" id="quizOptionsList"></div>
+
+          <div class="game-feedback-box hidden" id="quizFeedbackBox"></div>
+
+          <div class="quiz-footer-actions">
+            <button class="btn-game btn-blue hidden" id="btnQuizNext">下一題 ➔</button>
+          </div>
+        </div>
+
+        <!-- 測驗結果診斷報告區 -->
+        <div class="quiz-result-card hidden" id="quizResultBox">
+          <div class="result-badge-giant" id="resultLevelBadge">A1.2</div>
+          <h3 id="resultTitle">診斷結果：A1.2 初階進階者！</h3>
+          <p class="result-score-line">測驗總分：<strong id="resultScoreText">85 / 100</strong> 分</p>
+          <div class="result-analysis-grid">
+            <div class="analysis-box">
+              <h4>📊 各階段掌握度分析</h4>
+              <div id="resultStageBreakdown"></div>
+            </div>
+            <div class="analysis-box">
+              <h4>🧭 專屬下一步學習建議</h4>
+              <p id="resultAdviceText"></p>
+              <div class="result-actions-row">
+                <button class="btn-game btn-green" id="btnApplyAssessedLevel">✨ 將此級別設為我的目前等級</button>
+                <button class="btn-game btn-orange" id="btnRetakeQuiz">🔄 重新測驗一次</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 歷史測驗紀錄 -->
+        <div class="history-card">
+          <h3>📜 歷次級別測驗紀錄</h3>
+          <div id="quizHistoryList" class="history-list"></div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 7: 學習紀錄與備份系統 ==================== -->
+      <section class="tab-panel" id="tab-tracker">
+        <div class="section-header-card">
+          <div>
+            <span class="section-tag">📓 成長軌跡・獨立儲存與跨裝置備份</span>
+            <h2>學習紀錄系統、成就徽章與 JSON 檔案備份管理</h2>
+            <p>每位點進網站的朋友都擁有<strong>獨立的個人學習紀錄</strong>（自動儲存在你的裝置瀏覽器中；若在本地啟動伺服器則會同步寫入 <code>data/user_progress.json</code>），還可以隨時匯出成 JSON 檔案保存或跨手機/電腦還原！</p>
+          </div>
+        </div>
+
+        <!-- 成就徽章牆 -->
+        <div class="tracker-block">
+          <h3>🏅 我的德語成就徽章牆 (Erfolge)</h3>
+          <div class="badges-grid" id="badgesGrid"></div>
+        </div>
+
+        <div class="tracker-two-col">
+          <!-- 新增學習日誌表單 -->
+          <div class="tracker-block">
+            <h3>✍️ 新增今日學習打卡筆記 (+30 XP)</h3>
+            <form id="studyLogForm" class="study-form">
+              <div class="form-row">
+                <label>學習主題分類</label>
+                <select id="logCategory" required>
+                  <option value="DW Nicos Weg 主線">🎬 DW Nicos Weg 主線課程</option>
+                  <option value="文法與造句練習">🧱 文法與造句練習 (V2 / 格位 / 子句)</option>
+                  <option value="單字與三性記憶">🃏 單字與冠詞 (der/die/das) 記憶</option>
+                  <option value="聽力與 Podcast">🎧 聽力與 Podcast (Easy German / Slow German)</option>
+                  <option value="檢定模擬與閱讀">📰 檢定題庫與簡易新聞閱讀</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label>學習時長 (分鐘)</label>
+                <input type="number" id="logDuration" min="5" max="300" value="25" required />
+              </div>
+              <div class="form-row">
+                <label>今日學到的新單字、句型或心得筆記</label>
+                <textarea id="logNote" rows="3" placeholder="例如：今天搞懂了雙向介系詞 in + Akkusativ (動態去某處) 跟 in + Dativ (靜態在某處) 的差別！" required></textarea>
+              </div>
+              <button type="submit" class="btn-game btn-green full-width">➕ 儲存學習紀錄並領取 XP</button>
+            </form>
+          </div>
+
+          <!-- 備份與匯出匯入管理 -->
+          <div class="tracker-block">
+            <h3>💾 學習資料備份與跨裝置還原</h3>
+            <div class="storage-info-box">
+              <p>📂 <strong>目前儲存模式：</strong> <code id="serverDataPathText">瀏覽器獨立儲存 (LocalStorage)</code></p>
+              <p class="storage-desc">想把手機上的進度傳到電腦？只要點下方「⬇️ 下載 JSON 備份檔」，到另一台裝置點「⬆️ 匯入還原」即可無縫接軌！</p>
+            </div>
+
+            <div class="backup-btn-group">
+              <button class="btn-game btn-orange" id="btnDownloadJson">⬇️ 下載我的學習紀錄 (.json 備份檔)</button>
+              <label class="btn-game btn-blue file-upload-label">
+                ⬆️ 匯入還原學習紀錄 (.json)
+                <input type="file" id="inputRestoreJson" accept=".json" style="display:none;" />
+              </label>
+              <button class="btn-game btn-gray" id="btnCreateServerBackup">📦 同步備份 (本地伺服器開啟時支援)</button>
+              <button class="btn-game btn-red" id="btnResetProgress" style="margin-top:4px;">🗑️ 重置此裝置的學習進度 (從 0 開始)</button>
+            </div>
+
+            <h4>🕒 本地伺服器歷史備份檔清單</h4>
+            <div id="serverBackupsList" class="backups-list"></div>
+          </div>
+        </div>
+
+        <!-- 學習日誌時間軸 -->
+        <div class="tracker-block">
+          <h3>📅 我的德語學習日誌時間軸</h3>
+          <div id="studyLogsList" class="logs-timeline"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 關卡詳情互動 Modal -->
+  <div class="modal-backdrop hidden" id="nodeModalBackdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="level-pill" id="modalStageBadge">Step 1 · A1.1</span>
+          <h3 id="modalNodeTitle">關卡標題</h3>
+        </div>
+        <button class="btn-close-modal" id="btnCloseModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-summary" id="modalNodeSummary"></p>
+        <h4>🔑 核心必學重點整理：</h4>
+        <ul class="modal-keypoints" id="modalKeyPoints"></ul>
+
+        <h4>🗣️ 道地德語例句（點擊喇叭聽發音）：</h4>
+        <div class="modal-sentences" id="modalSentences"></div>
+
+        <h4>🧭 搭配練習的各大網站傳送門：</h4>
+        <div class="modal-resources" id="modalResources"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-game btn-green full-width" id="btnToggleNodeComplete">
+          ✅ 標記為「已完成此關卡」並領取 XP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右下角 XP 與儲存通知 Toast -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

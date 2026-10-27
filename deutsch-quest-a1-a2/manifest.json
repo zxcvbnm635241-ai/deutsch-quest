@@ -1,0 +1,16 @@
+{
+  "name": "DeutschQuest 🥨 德語從 0 到 A2 遊戲化學習基地",
+  "short_name": "DeutschQuest",
+  "description": "整合各大德語學習網站、0到A2闖關地圖、四大互動小遊戲、三性單字閃卡與CEFR級別診斷測驗！",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F7F9FA",
+  "theme_color": "#58CC02",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
